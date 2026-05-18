@@ -236,3 +236,13 @@ NULL remembers session count across resets.
 | MAIL | Read archived emails from Dr. Voss |
 | MONITOR | Watch PID 9999 grow |
 | CHAT | Communicate directly with NULL |
+
+---
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or Pull Requests. Here are some ideas for future improvements:
+
+* Adding more phases to the game
+
+* Adding a rescue ending
