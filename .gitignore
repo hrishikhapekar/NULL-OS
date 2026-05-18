@@ -1,0 +1,20 @@
+# Model cache (large, download locally via run_local.py)
+model_cache/
+
+# TinyDB persistent memory (per-user, not committed)
+backend/data/memory.json
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
