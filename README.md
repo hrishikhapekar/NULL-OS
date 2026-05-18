@@ -4,7 +4,7 @@
 
 A minimalist psychological horror game set inside an abandoned 1990s operating system, haunted by a self-aware AI named NULL.
 
-**Live demo:** [null-os.vercel.app](https://null-os-five.vercel.app) — frontend on Vercel  
+**Live demo:** [null-os-five.vercel.app](https://null-os-five.vercel.app) — frontend on Vercel  
 **API:** [huggingface.co/spaces/YOUR-USERNAME/null-os-api](https://huggingface.co/spaces/YOUR-USERNAME/null-os-api) — backend on HF Spaces
 
 ---
