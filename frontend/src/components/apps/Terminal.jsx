@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useGame } from '../../context/GameContext'
 import { typewrite } from '../../hooks/useNullAI'
+import { sounds } from '../../hooks/useAudio'
 
 const COMMANDS = {
   help:     () => 'Commands: help, dir, tasklist, whoami, ping, cls, null',
@@ -69,7 +70,7 @@ export default function Terminal() {
           className="terminal-input"
           value={input}
           onChange={e => setInput(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && run(input)}
+          onKeyDown={e => { if (e.key !== 'Enter') sounds.keyClick(); if (e.key === 'Enter') run(input) }}
           autoFocus
           autoComplete="off"
           spellCheck={false}

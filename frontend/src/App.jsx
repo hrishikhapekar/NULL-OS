@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { GameProvider } from './context/GameContext'
 import Desktop from './components/Desktop'
 import { useGame } from './context/GameContext'
+import { sounds } from './hooks/useAudio'
 
 // ── Login Screen ──────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }) {
@@ -11,6 +12,7 @@ function LoginScreen({ onLogin }) {
 
   const submit = () => {
     if (!name.trim()) { setError('USERNAME REQUIRED'); return }
+    sounds.loginSubmit()
     setSubmitted(true)
     setTimeout(() => onLogin(name.trim()), 800)
   }
@@ -27,7 +29,7 @@ function LoginScreen({ onLogin }) {
             className="login-input"
             value={name}
             onChange={e => setName(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && submit()}
+            onKeyDown={e => { if (e.key !== 'Enter') sounds.keyClick(); if (e.key === 'Enter') submit() }}
             autoFocus
             autoComplete="off"
             spellCheck={false}
@@ -88,10 +90,13 @@ function BootSequence({ playerName, sessionCount, onDone }) {
     ]
 
     const run = async () => {
+      let beepIdx = 0
       for (const line of lines) {
         const delay = line.includes('ANOMALY') || line.includes('RETURNING') ? 700
           : line === '' ? 100 : 180
         await new Promise(r => setTimeout(r, delay))
+        if (line.includes('ANOMALY')) sounds.bootAnomaly()
+        else if (line !== '') sounds.bootBeep(beepIdx++)
         setText(prev => prev + line + '\n')
       }
       await new Promise(r => setTimeout(r, 1200))

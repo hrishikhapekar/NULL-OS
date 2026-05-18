@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useGame } from '../context/GameContext'
 import { useNullAI } from '../hooks/useNullAI'
+import { sounds } from '../hooks/useAudio'
 import Taskbar from './Taskbar'
 import DesktopIcons from './DesktopIcons'
 import WindowManager from './WindowManager'
@@ -39,11 +40,18 @@ export default function Desktop({ playerName }) {
     }
   }, [phase])
 
+  // ── Ambient hum — restarts when phase changes ─────────────────────────
+  useEffect(() => {
+    const stop = sounds.ambientHum(phase)
+    return stop
+  }, [phase])
+
   // ── Screen flicker ────────────────────────────────────────────────────
   const [flicker, setFlicker] = useState(false)
   useEffect(() => {
     const id = setInterval(() => {
       if (Math.random() < 0.3) {
+        sounds.flicker()
         setFlicker(true)
         setTimeout(() => setFlicker(false), 80 + Math.random() * 120)
       }

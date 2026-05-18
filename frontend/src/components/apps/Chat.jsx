@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useGame } from '../../context/GameContext'
 import { useNullAI, typewrite } from '../../hooks/useNullAI'
+import { sounds } from '../../hooks/useAudio'
 
 export default function Chat() {
   const { phase } = useGame()
@@ -34,6 +35,7 @@ export default function Chat() {
     const id = Date.now() + Math.random()
     setMessages(prev => [...prev, { role: 'null', text: '', id }])
     typewrite(fullText, (ch) => {
+      sounds.nullType()
       setMessages(prev => prev.map(m => m.id === id ? { ...m, text: m.text + ch } : m))
     }, 25)
   }

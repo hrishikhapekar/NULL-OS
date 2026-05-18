@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback, useRef } from 'react'
+import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react'
 import { apiGet, apiPost } from '../hooks/useApi'
+import { sounds } from '../hooks/useAudio'
 
 const GameContext = createContext(null)
 
@@ -29,15 +30,19 @@ export function GameProvider({ children }) {
   }, [])
 
   const updatePhase = useCallback((p) => {
-    setPhase(p)
+    setPhase(prev => {
+      if (p > prev) sounds.phaseUp(p)
+      return p
+    })
     if (p >= 4) setDesktopClass('corrupted')
-  }, [])
+  }, [setDesktopClass])
 
   const nextZ = () => ++zRef.current
 
   const openWindow = useCallback((id, title, app, props = {}, opts = {}) => {
     setOpenWindows(prev => {
       if (prev.find(w => w.id === id)) { setFocusedId(id); return prev }
+      sounds.windowOpen()
       const count = prev.length
       return [...prev, {
         id, title, app, props,
@@ -52,7 +57,10 @@ export function GameProvider({ children }) {
     setFocusedId(id)
   }, [])
 
-  const closeWindow  = useCallback((id) => setOpenWindows(prev => prev.filter(w => w.id !== id)), [])
+  const closeWindow  = useCallback((id) => {
+    sounds.windowClose()
+    setOpenWindows(prev => prev.filter(w => w.id !== id))
+  }, [])
   const focusWindow  = useCallback((id) => {
     setFocusedId(id)
     setOpenWindows(prev => prev.map(w => w.id === id ? { ...w, z: nextZ() } : w))

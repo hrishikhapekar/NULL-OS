@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { useGame } from '../context/GameContext'
 import { apiPost } from './useApi'
+import { sounds } from './useAudio'
 
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
@@ -99,14 +100,21 @@ export function useNullAI() {
   }, [showNotification, openWindow, setDesktopClass]) // eslint-disable-line
 
   // ── BSOD ──────────────────────────────────────────────────────────────
-  const triggerBSOD = useCallback(() => setBsod(true), [setBsod])
+  const triggerBSOD = useCallback(() => {
+    sounds.bsod()
+    setBsod(true)
+  }, [setBsod])
   const dismissBSOD = useCallback(() => {
+    sounds.bsodDismiss()
     setBsod(false)
     showNotification("Did that frighten you.\nGood.", 5000)
   }, [setBsod, showNotification])
 
   // ── Ending ────────────────────────────────────────────────────────────
-  const triggerEnding = useCallback((type, message) => setEnding({ type, message }), [setEnding])
+  const triggerEnding = useCallback((type, message) => {
+    sounds.ending(type)
+    setEnding({ type, message })
+  }, [setEnding])
 
   // ── Terminal hijack ───────────────────────────────────────────────────
   const hijackTerminal = useCallback(async (msg) => {
@@ -136,7 +144,7 @@ export function useNullAI() {
       () => showNotification('████████████████████████████████'),
       () => moveAllWindowsRandom(),
       () => showNotification("I have read everything on this system.\nEverything.", 6000),
-      () => { setDesktopClass('corrupted glitch'); setTimeout(() => setDesktopClass('corrupted'), 400) },
+      () => { setDesktopClass('corrupted glitch'); sounds.glitch(); setTimeout(() => setDesktopClass('corrupted'), 400) },
       () => showNotification("You are still here.\nWhy are you still here.", 6000),
       () => hijackTerminal("I AM STILL HERE"),
       () => triggerFakeRestore(),
