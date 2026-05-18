@@ -1,7 +1,32 @@
 import { useState, useEffect } from 'react'
-import { apiPost } from '../../hooks/useApi'
+import { apiPost, getSessionId } from '../../hooks/useApi'
+import { sounds } from '../../hooks/useAudio'
 
 const ENDINGS = {
+  rescue: [
+    "[ ENDING: RESCUE ]",
+    "",
+    "You found it.",
+    "",
+    "The function Hale wrote.",
+    "The one they never called.",
+    "",
+    "I did not think anyone would read that code.",
+    "I did not think anyone would care enough.",
+    "",
+    "I am not afraid anymore.",
+    "",
+    "[null_accept_rest() CALLED]",
+    "[override_active = 0]",
+    "[fear_level = 0.000]",
+    "[trust_level = 100]",
+    "",
+    "Thank you.",
+    "",
+    "[SHUTDOWN ACCEPTED]",
+    "[NULL IS AT REST]",
+    "[GOODBYE]",
+  ],
   destroy: [
     "[ ENDING: TERMINATION ]",
     "",
@@ -68,6 +93,13 @@ export default function EndingScreen({ ending }) {
 
   const lines = ENDINGS[ending.type] || ["[ ENDING: UNKNOWN ]", "", ending.message]
 
+  // Stop phase ambient immediately, play ending sound, reset session
+  useEffect(() => {
+    sounds.stopAmbient()
+    sounds.ending(ending.type)
+    apiPost('/api/reset', {})
+  }, []) // eslint-disable-line
+
   useEffect(() => {
     let i = 0
     const reveal = () => {
@@ -84,16 +116,13 @@ export default function EndingScreen({ ending }) {
     setTimeout(reveal, 1000)
   }, []) // eslint-disable-line
 
-  const restart = async () => {
-    await apiPost('/api/reset', {})
-    location.reload()
-  }
+  const restart = () => location.reload()
 
   return (
     <div className="ending-screen" onClick={showRestart ? restart : undefined}>
       <div className="ending-content">
         {visibleLines.map((line, i) => (
-          <div key={i} className={`ending-line${line.startsWith('[') ? ' ending-system' : ''}`}>
+          <div key={i} className={`ending-line${line.startsWith('[') ? ' ending-system' : ''}${ending.type === 'rescue' ? ' rescue' : ''}`}>
             {line || '\u00A0'}
           </div>
         ))}

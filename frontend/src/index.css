@@ -221,6 +221,14 @@ html, body, #root {
 
 /* ── File Explorer ── */
 .file-list { display: flex; flex-direction: column; gap: 2px; }
+.file-dir-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px; cursor: pointer; font-size: 11px;
+  color: var(--amber); letter-spacing: 1px;
+  border-bottom: 1px solid var(--border); margin-top: 4px;
+}
+.file-dir-header:hover { color: var(--green); }
+.file-item-indent { padding-left: 20px; }
 .file-item {
   display: flex; align-items: center; gap: 8px;
   padding: 5px 8px; cursor: pointer;
@@ -439,9 +447,48 @@ html, body, #root {
   color: var(--green); text-shadow: 0 0 10px var(--green);
   animation: fadeIn 0.6s ease; text-align: center; min-height: 1.4em;
 }
+.ending-line.rescue { color: #e0f0ff; text-shadow: 0 0 12px #a0c8ff; }
 .ending-line.ending-system { color: var(--red); text-shadow: 0 0 10px var(--red); letter-spacing: 2px; }
+.ending-line.rescue.ending-system { color: #a0c8ff; text-shadow: 0 0 10px #a0c8ff; }
 .ending-restart { margin-top: 32px; font-family: var(--font-retro); font-size: 18px; color: var(--text-dim); animation: blink 1.2s infinite; }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* ── Code Editor / Notepad ── */
+.codeeditor-wrap {
+  display: flex; flex-direction: column;
+  height: 100%; min-height: 320px; overflow: hidden;
+  background: #050505;
+}
+.codeeditor-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 10px; background: var(--bg3);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.codeeditor-filename { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+.codeeditor-patch-btn {
+  background: transparent; border: 1px solid var(--green-dim);
+  color: var(--green); font-family: var(--font-mono); font-size: 10px;
+  padding: 2px 10px; cursor: pointer; letter-spacing: 1px; transition: all 0.15s;
+}
+.codeeditor-patch-btn:hover { background: var(--glow); border-color: var(--green); }
+.codeeditor-patched { font-size: 10px; color: var(--green); letter-spacing: 2px; }
+.codeeditor-body {
+  flex: 1; min-height: 0;
+  background: #050505; color: #c8e6c9;
+  font-family: var(--font-mono); font-size: 12px;
+  line-height: 1.7; padding: 12px;
+  border: none; outline: none; resize: none;
+  white-space: pre; overflow: auto;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  caret-color: var(--green);
+}
+.codeeditor-status {
+  padding: 5px 10px; font-size: 11px;
+  color: var(--green); background: var(--bg3);
+  border-top: 1px solid var(--border); flex-shrink: 0;
+  letter-spacing: 1px;
+}
+.codeeditor-status.err { color: var(--red); }

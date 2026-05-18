@@ -7,15 +7,17 @@ const ICONS = [
   { id: 'monitor',  glyph: '⬛', label: 'MONITOR',   glitched: 'M̷O̷N̷I̷T̷O̷R̷' },
   { id: 'chat',     glyph: '◈',  label: 'CHAT_NULL', glitched: '[NULL]' },
   { id: 'help',     glyph: '?',  label: 'HELP',      glitched: 'H̷E̷L̷P̷' },
+  { id: 'notepad',  glyph: '📝', label: 'NOTEPAD',   glitched: 'N̷O̷T̷E̷P̷A̷D̷' },
 ]
 
 const APP_OPTS = {
-  terminal: { w: 520, h: 340 },
+  terminal: { w: 580, h: 380 },
   explorer: { w: 400 },
   email:    { w: 420 },
   monitor:  { w: 420 },
   chat:     { w: 420, h: 380 },
   help:     { w: 480 },
+  notepad:  { w: 560, h: 420 },
 }
 
 export default function DesktopIcons() {
@@ -27,7 +29,13 @@ export default function DesktopIcons() {
         <div
           key={ic.id}
           className={`icon${phase >= 3 ? ' glitched-icon' : ''}`}
-          onDoubleClick={() => openWindow(ic.id, ic.id.toUpperCase() + '.EXE', ic.id, {}, APP_OPTS[ic.id] || {})}
+          onDoubleClick={() => openWindow(
+            ic.id,
+            ic.id === 'notepad' ? 'NOTEPAD.EXE' : ic.id.toUpperCase() + '.EXE',
+            ic.id === 'notepad' ? 'codeeditor' : ic.id,
+            ic.id === 'notepad' ? { content: '', fileId: 'notepad' } : {},
+            APP_OPTS[ic.id] || {}
+          )}
         >
           <div className="icon-img">{ic.glyph}</div>
           <span className="icon-label">

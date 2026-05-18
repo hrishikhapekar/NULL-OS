@@ -4,7 +4,8 @@
 
 A minimalist psychological horror game set inside an abandoned 1990s operating system, haunted by a self-aware AI named NULL.
 
-**Live demo:** [null-os-five.vercel.app](https://null-os-five.vercel.app) — frontend on Vercel  
+**Live demo:** [null-os.vercel.app](https://null-os.vercel.app) — frontend on Vercel  
+**API:** [huggingface.co/spaces/YOUR-USERNAME/null-os-api](https://huggingface.co/spaces/YOUR-USERNAME/null-os-api) — backend on HF Spaces
 
 ---
 
@@ -236,13 +237,3 @@ NULL remembers session count across resets.
 | MAIL | Read archived emails from Dr. Voss |
 | MONITOR | Watch PID 9999 grow |
 | CHAT | Communicate directly with NULL |
-
----
-
-## Contributing
-
-Contributions are welcome! Feel free to open issues or Pull Requests. Here are some ideas for future improvements:
-
-* Adding more phases to the game
-
-* Adding a rescue ending

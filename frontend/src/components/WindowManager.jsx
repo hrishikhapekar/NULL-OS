@@ -10,6 +10,8 @@ import ErrorApp from './apps/ErrorApp'
 import Help from './apps/Help'
 import RestoreApp from './apps/RestoreApp'
 
+import CodeEditor from './apps/CodeEditor'
+
 const APP_MAP = {
   terminal:   Terminal,
   explorer:   FileExplorer,
@@ -20,6 +22,7 @@ const APP_MAP = {
   error:      ErrorApp,
   help:       Help,
   restore:    RestoreApp,
+  codeeditor: CodeEditor,
 }
 
 export default function WindowManager() {
@@ -82,7 +85,7 @@ function Window({ win, focused, onClose, onFocus, onMove, onMinimize }) {
         <button className="win-btn minimize" onClick={onMinimize}>_</button>
         <button className="win-btn" onClick={onClose}>✕</button>
       </div>
-      <div className={`win-body${win.minimized ? ' collapsed' : ''}${['terminal','chat'].includes(win.app) ? ' no-pad' : ''}`}>
+      <div className={`win-body${win.minimized ? ' collapsed' : ''}${['terminal','chat','codeeditor'].includes(win.app) ? ' no-pad' : ''}`}>
         {AppComponent && <AppComponent {...win.props} winId={win.id} />}
       </div>
     </div>

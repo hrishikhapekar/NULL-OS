@@ -21,13 +21,23 @@ export function GameProvider({ children }) {
   const loadState = useCallback(async () => {
     try {
       const [state, files] = await Promise.all([apiGet('/api/state'), apiGet('/api/lore')])
-      setPhase(state.phase)
+      // If a previous session ended but wasn't cleared, reset it now
+      if (state.ending || state.phase > 1) {
+        await apiPost('/api/reset', {})
+        setPhase(1)
+        setSessionCount(1)
+        setLoreFiles(files)
+        return
+      }
+      const p = state.phase
+      setPhase(p)
+      if (p >= 4) setDesktopClass('corrupted')
       setSessionCount(state.session_count ?? 1)
       setLoreFiles(files)
     } catch {
       console.warn('Backend offline')
     }
-  }, [])
+  }, [setDesktopClass])
 
   const updatePhase = useCallback((p) => {
     setPhase(prev => {

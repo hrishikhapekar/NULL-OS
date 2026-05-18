@@ -3,15 +3,36 @@ import { GameProvider } from './context/GameContext'
 import Desktop from './components/Desktop'
 import { useGame } from './context/GameContext'
 import { sounds } from './hooks/useAudio'
+import { getSessionId } from './hooks/useApi'
+
+const BASE = import.meta.env.VITE_API_URL ?? ''
+
+// Clear session on tab close / refresh so next visit always starts fresh
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    const sid = getSessionId()
+    navigator.sendBeacon(
+      BASE + '/api/session/clear',
+      new Blob([JSON.stringify({ session_id: sid })], { type: 'application/json' })
+    )
+  })
+}
 
 // ── Login Screen ──────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }) {
   const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const stopAmbientRef = useRef(null)
+
+  useEffect(() => {
+    stopAmbientRef.current = sounds.loginAmbient()
+    return () => stopAmbientRef.current?.()
+  }, [])
 
   const submit = () => {
     if (!name.trim()) { setError('USERNAME REQUIRED'); return }
+    stopAmbientRef.current?.()
     sounds.loginSubmit()
     setSubmitted(true)
     setTimeout(() => onLogin(name.trim()), 800)

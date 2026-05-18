@@ -42,13 +42,16 @@ def start_server():
     python = "py" if sys.platform == "win32" else sys.executable
     python_args = ["-3.11"] if sys.platform == "win32" else []
 
-    result = subprocess.run(
-        [python, *python_args, "-m", "uvicorn", "backend.main:app",
-         "--host", "127.0.0.1", "--port", "8000"],
-        env=env,
-    )
-    if result.returncode != 0:
-        print(f"[NULL.OS] Server exited with code {result.returncode}")
+    try:
+        result = subprocess.run(
+            [python, *python_args, "-m", "uvicorn", "backend.main:app",
+             "--host", "127.0.0.1", "--port", "8000"],
+            env=env,
+        )
+        if result.returncode != 0:
+            print(f"[NULL.OS] Server exited with code {result.returncode}")
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == "__main__":
     try:

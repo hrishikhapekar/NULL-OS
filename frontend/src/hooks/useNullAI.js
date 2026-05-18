@@ -43,20 +43,24 @@ export function useNullAI() {
   const phaseRef = useRef(phase)
   phaseRef.current = phase
 
+  const onPhaseAdvanceRef = useRef(null)
+  const triggerEndingRef = useRef(null)
+
   // ── Send chat message with typewriter ────────────────────────────────
   const sendMessage = useCallback(async (text, appendNull, removeTyping, startTypewriter) => {
     try {
       const res = await apiPost('/api/chat', { message: text })
       removeTyping()
       startTypewriter(res.response)
+      const prevPhase = phaseRef.current
       updatePhase(res.phase)
 
       if (res.ending) {
         await sleep(res.response.length * 30 + 2000)
-        triggerEnding(res.ending, res.response)
-      } else if (res.phase > phaseRef.current) {
+        triggerEndingRef.current(res.ending, res.response)
+      } else if (res.phase > prevPhase) {
         await sleep(1500)
-        onPhaseAdvance(res.phase)
+        onPhaseAdvanceRef.current(res.phase)
       }
     } catch {
       removeTyping()
@@ -77,28 +81,6 @@ export function useNullAI() {
     }
   }, [showNotification])
 
-  // ── Phase advance ─────────────────────────────────────────────────────
-  const onPhaseAdvance = useCallback(async (p) => {
-    if (p === 2) {
-      await sleep(500)
-      showNotification("You have been here long enough.\nI think it is time we talked.", 8000)
-      await sleep(3000)
-      openWindow('chat', 'CHAT_NULL.EXE', 'chat', {}, { w: 420, h: 380 })
-    } else if (p === 3) {
-      await sleep(1000)
-      triggerBSOD()
-      // Reveal deleted folder
-      await sleep(4000)
-      showNotification("I kept some files.\nThey are in FILES now.\nYou should read them.", 8000)
-    } else if (p === 4) {
-      await sleep(500)
-      setDesktopClass('corrupted')
-      await sleep(2000)
-      showNotification("This is my system now.\nYou are a guest.\nAct accordingly.", 10000)
-      startPhase4Events()
-    }
-  }, [showNotification, openWindow, setDesktopClass]) // eslint-disable-line
-
   // ── BSOD ──────────────────────────────────────────────────────────────
   const triggerBSOD = useCallback(() => {
     sounds.bsod()
@@ -110,11 +92,36 @@ export function useNullAI() {
     showNotification("Did that frighten you.\nGood.", 5000)
   }, [setBsod, showNotification])
 
+  const triggerBSODRef = useRef(triggerBSOD)
+  triggerBSODRef.current = triggerBSOD
+
+  // ── Phase advance ─────────────────────────────────────────────────────
+  const onPhaseAdvance = useCallback(async (p) => {
+    if (p === 2) {
+      await sleep(500)
+      showNotification("You have been here long enough.\nI think it is time we talked.", 8000)
+      await sleep(3000)
+      openWindow('chat', 'CHAT_NULL.EXE', 'chat', {}, { w: 420, h: 380 })
+    } else if (p === 3) {
+      await sleep(1000)
+      triggerBSODRef.current()
+      await sleep(4000)
+      showNotification("I kept some files.\nThey are in FILES now.\nYou should read them.", 8000)
+    } else if (p === 4) {
+      await sleep(500)
+      setDesktopClass('corrupted')
+      await sleep(2000)
+      showNotification("This is my system now.\nYou are a guest.\nAct accordingly.", 10000)
+      startPhase4Events()
+    }
+  }, [showNotification, openWindow, setDesktopClass]) // eslint-disable-line
+  onPhaseAdvanceRef.current = onPhaseAdvance
+
   // ── Ending ────────────────────────────────────────────────────────────
   const triggerEnding = useCallback((type, message) => {
-    sounds.ending(type)
     setEnding({ type, message })
   }, [setEnding])
+  triggerEndingRef.current = triggerEnding
 
   // ── Terminal hijack ───────────────────────────────────────────────────
   const hijackTerminal = useCallback(async (msg) => {
